@@ -3,7 +3,23 @@
     "allow": [
       "Bash(\"C:/Program Files/Git/bin/git.exe\" init)",
       "Bash(\"C:/Program Files/Git/bin/git.exe\" add .)",
-      "Bash(\"C:/Program Files/Git/bin/git.exe\" status --short)"
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" status --short)",
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" -C \"d:/Projects/restaurant-kitchen-service\" status --short)",
+      "Bash('C:/Program Files/Git/bin/git.exe' -C d:/Projects/restaurant-kitchen-service commit -m ':*)",
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" -C \"d:/Projects/restaurant-kitchen-service\" commit -m \"Initial commit: restaurant kitchen service\")",
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" -C \"d:/Projects/restaurant-kitchen-service\" add backend/src/controllers/authController.js frontend/src/pages/RegisterPage.js frontend/src/pages/LoginPage.js README.md)",
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" -C \"d:/Projects/restaurant-kitchen-service\" commit -m \"Move validation to backend, add README\")",
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" -C \"d:/Projects/restaurant-kitchen-service\" --no-pager log --oneline)",
+      "Bash(node -e ':*)",
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" -C \"d:/Projects/restaurant-kitchen-service\" rm -r --cached .claude/)",
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" -C \"d:/Projects/restaurant-kitchen-service\" add .gitignore)",
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" -C \"d:/Projects/restaurant-kitchen-service\" commit -m \"Remove .claude from tracking, add to gitignore\")",
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" -C \"d:/Projects/restaurant-kitchen-service\" add TESTING.md)",
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" -C \"d:/Projects/restaurant-kitchen-service\" commit -m \"Add testing documentation \\(test cases, Postman, bug report, checklists\\)\")",
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" -C \"d:/Projects/restaurant-kitchen-service\" reset HEAD~1)",
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" -C \"d:/Projects/restaurant-kitchen-service\" log --oneline)",
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" -C \"d:/Projects/restaurant-kitchen-service\" remote -v)",
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" -C \"d:/Projects/restaurant-kitchen-service\" push --force origin main)"
     ]
   }
 }

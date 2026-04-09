@@ -77,7 +77,7 @@ const login = async (req, res) => {
 
     const cook = await Cook.findOne({ where: { username: username.trim() } });
     if (!cook || !(await cook.validatePassword(password))) {
-      return res.status(401).json({ message: 'Invalid credentials', errors: { username: 'Invalid username or password' } });
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
     const token = signToken(cook.id);
     res.json({ token, cook });
