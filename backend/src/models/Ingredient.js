@@ -1,0 +1,26 @@
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
+
+const Ingredient = sequelize.define('Ingredient', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    validate: { len: [2, 100] },
+  },
+  unit: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'pcs',
+    comment: 'Unit of measurement: kg, g, l, ml, pcs, etc.',
+  },
+}, {
+  tableName: 'ingredients',
+});
+
+module.exports = Ingredient;

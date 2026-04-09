@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" init)",
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" add .)",
+      "Bash(\"C:/Program Files/Git/bin/git.exe\" status --short)"
+    ]
+  }
+}
