@@ -5,23 +5,33 @@ import { useAuth } from '../context/AuthContext';
 export default function LoginPage() {
   const { login } = useAuth();
   const [form, setForm] = useState({ username: '', password: '' });
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    if (errors[e.target.name]) {
+      const updated = { ...errors };
+      delete updated[e.target.name];
+      setErrors(updated);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    if (!form.username.trim() || !form.password) {
-      setError('Username and password are required');
-      return;
-    }
+    setErrors({});
+    setServerError('');
     setLoading(true);
     try {
       await login(form.username, form.password);
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      const data = err.response?.data;
+      if (data?.errors) {
+        setErrors(data.errors);
+      } else {
+        setServerError(data?.message || 'Login failed');
+      }
     } finally {
       setLoading(false);
     }
@@ -35,7 +45,7 @@ export default function LoginPage() {
           <h1>Kitchen Service</h1>
           <p>Sign in to your account</p>
         </div>
-        {error && <div className="alert alert-error">{error}</div>}
+        {serverError && <div className="alert alert-error">{serverError}</div>}
         <form onSubmit={handleSubmit} className="auth-form" noValidate>
           <div className="form-group">
             <label>Username</label>
@@ -43,10 +53,11 @@ export default function LoginPage() {
               name="username"
               value={form.username}
               onChange={handleChange}
-              required
               autoFocus
               placeholder="Enter username"
+              className={errors.username ? 'input-error' : ''}
             />
+            {errors.username && <span className="field-error">{errors.username}</span>}
           </div>
           <div className="form-group">
             <label>Password</label>
@@ -55,9 +66,10 @@ export default function LoginPage() {
               type="password"
               value={form.password}
               onChange={handleChange}
-              required
               placeholder="Enter password"
+              className={errors.password ? 'input-error' : ''}
             />
+            {errors.password && <span className="field-error">{errors.password}</span>}
           </div>
           <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
             {loading ? 'Signing in...' : 'Sign In'}
