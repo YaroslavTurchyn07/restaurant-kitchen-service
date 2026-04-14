@@ -289,7 +289,7 @@ pm.test("Response is array", () => {
 ```
 **Result**  
   
-![TR 05](./TR_05.png)
+![TR 05](./TR-05.png)
 ---
 
 ### Task 6 — Get dishes without token (expect 401)
