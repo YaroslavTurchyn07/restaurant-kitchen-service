@@ -306,3 +306,131 @@ pm.test("Status is 401", () => pm.response.to.have.status(401));
 **Result**  
   
 ![TR 06](./TR-06.png)
+
+---
+
+## Bug Reports
+
+### BUG-001 — [Login] Error message disappears after failed login attempt
+
+## General Information
+
+| Field | Value |
+|---|---|
+| **Bug ID** | BUG-001 |
+| **Project** | Kitchen Service |
+| **Feature** | Login Form |
+| **Type** | Functional / API |
+| **Status** | Fixed |
+| **Severity** | High |
+| **Priority** | High |
+| **Reporter** | Yaroslav Turchyn |
+| **Date Found** | April 2026 |
+| **Environment** | Chrome 123, Windows 11, App v1.0, Node.js backend |
+
+---
+
+## Summary
+
+When a user submits the login form with a valid username but an incorrect password, the server returns **HTTP 401 Unauthorized**. The error message briefly appears on screen but disappears within ~1 second, causing the user to receive no persistent feedback about what went wrong.
+
+---
+
+## Preconditions
+
+- Application is running locally at `http://localhost:3000`
+- A registered account exists with a valid username (e.g. `hana_cook`) and password `Secret1!`
+- Browser DevTools is open on the **Network** tab
+- User is **not** logged in
+
+---
+
+## Steps to Reproduce
+
+1. Navigate to `/login`
+2. Enter a valid registered username: `hana_cook`
+3. Enter an **incorrect** password: `wrongPass`
+4. Click the **"Sign In"** button
+5. Observe the error message on screen
+6. Check **DevTools → Network → login request → Response status**
+
+---
+
+## Expected Result
+
+- Server returns **HTTP 401 Unauthorized**
+- Error message is displayed: *"Invalid username or password"*
+- Error message **remains visible** until the user takes action
+- User stays on the login page
+
+---
+
+## Actual Result
+
+- Server returns **HTTP 400 Bad Request** 
+- Error message briefly appears but **disappears after ~1 second** ❌
+- User is left on the login page with no indication of what went wrong ❌
+
+---
+
+## Root Cause
+
+The backend returned a `400` response with both a `message` field and an `errors` object:
+
+```json
+{
+  "message": "Invalid credentials",
+  "errors": { "username": "Invalid username or password" }
+}
+```
+
+The frontend checked for `errors` first — if present, it set a **field-level error** on the username input instead of a **banner error**. Field-level errors are cleared automatically when the user starts typing, causing the message to disappear immediately.
+
+---
+
+## Fix Applied
+
+Removed the `errors` object from the 401 response in `authController.js`:
+
+```js
+// ❌ Before (incorrect)
+return res.status(401).json({
+  message: 'Invalid credentials',
+  errors: { username: 'Invalid username or password' }
+});
+
+// ✅ After (fixed)
+return res.status(401).json({ message: 'Invalid credentials' });
+```
+
+This causes the frontend to display the message as a persistent **banner** (`serverError`) instead of a disappearing field error.
+
+---
+
+## Impact
+
+- 🔴 **UX** — User did not understand why login failed due to disappearing error message
+- 🟡 **API Semantics** — Response contained misleading `errors` field for an authentication failure
+
+---
+
+## Attachments
+
+| File | Description |
+|---|---|
+| `screenshot_401_response.png` | DevTools Network tab showing 401 response code |
+| `screen_recording_page_reset.mp4` | Screen recording showing error message disappearing after ~1 second |
+
+---
+
+## Test Cases Related
+
+| Test Case ID | Description | Result |
+|---|---|---|
+| TC-LOGIN-001 | Successful login with valid credentials | ✅ PASS |
+| TC-LOGIN-002 | Login with incorrect password | ✅ PASS (after fix) |
+| TC-LOGIN-004 | Login with empty username | ✅ PASS |
+
+---
+
+*Reported by Yaroslav Turchyn — Kitchen Service QA Portfolio Project, April 2026*
